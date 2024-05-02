@@ -1,0 +1,21 @@
+DELETE FROM cliente;
+INSERT INTO cliente
+( clienteid, nombre, correo, tel) VALUES
+( NULL, "Enrique Giottonini", "eg@gmail.com", 6622334455),
+( NULL, "Raul Perez", "rp@fastmail.com", 66210000001),
+( NULL, "Maria del Barrio", "mdb@outlook.com", 66000000901)
+;
+
+DELETE FROM carro;
+INSERT INTO carro
+( carroid, propietario, kilometraje ) VALUES
+( NULL, 1, 120),
+( NULL, 1, 999)
+;
+
+DELETE FROM orden_carro;
+INSERT INTO orden_carro
+( no_orden, carro, asegurado, fecha_orden) VALUES
+( NULL, 1, 0, NULL)
+;
+
