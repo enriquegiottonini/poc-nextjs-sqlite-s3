@@ -15,7 +15,7 @@ INSERT INTO carro
 
 DELETE FROM orden_carro;
 INSERT INTO orden_carro
-( no_orden, carro, asegurado, fecha_orden) VALUES
-( NULL, 1, 0, NULL)
+( carro, asegurado) VALUES
+( 1, 0)
 ;
 
