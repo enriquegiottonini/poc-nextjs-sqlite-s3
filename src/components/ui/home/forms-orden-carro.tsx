@@ -15,18 +15,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { createOrden } from "@/lib/api/crud.db";
 
-// const formSchema = z.object({
-//     nombre_cliente: z.string().min(1),
-//     correo_cliente: z.string().email().optional(),
-//     telefono_cliente: z.string(),
-//     kilometraje: z.string().optional(),
-//     asegurado: z.boolean(),
-//     fecha_orden: z.string().optional(),
-// });
-
-const formSchema = z.object({
+const formSchema: any = z.object({
     nombre_cliente: z.string().min(2, {
       message: "El nombre debe tener al menos 2 caracteres.",
     }),
@@ -45,18 +36,7 @@ const formSchema = z.object({
 });
 
 export default function FormOrdenCarro() {
-    // 1. Define your form.
-    // const form = useForm<z.infer<typeof formSchema>>({
-    //     resolver: zodResolver(formSchema),
-    //     defaultValues: {
-    //         nombre_cliente: "",
-    //         correo_cliente: "",
-    //         telefono_cliente: "",
-    //         kilometraje: "",
-    //         asegurado: false,
-    //         fecha_orden: "",
-    //     },
-    // })
+
     // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,7 +52,14 @@ export default function FormOrdenCarro() {
     
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+      const orden = {
+        nombre: values.nombre_cliente,
+        correo: values.correo_cliente,
+        tel: values.telefono_cliente,
+        kilometraje: values.kilometraje,
+        asegurado: values.asegurado,
+      };
+      createOrden(orden);
     }
 
     return (

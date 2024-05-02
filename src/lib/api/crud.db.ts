@@ -1,32 +1,7 @@
+"use server";
+
 import { db } from "../connect";
-
-// DROP TABLE IF EXISTS cliente;
-// CREATE TABLE cliente 
-// (
-//         clienteid       INTEGER PRIMARY KEY,
-//         nombre          TEXT NOT NULL CHECK( nombre != '' ), -- empty string
-//         correo          TEXT,
-//         tel             TEXT
-// );
-
-// DROP TABLE IF EXISTS carro;
-// CREATE TABLE carro 
-// (
-//         carroid         INTEGER PRIMARY KEY,
-//         propietario     INTEGER,
-//         kilometraje     INTEGER,
-//         FOREIGN KEY(propietario) REFERENCES cliente(clienteid)
-// );
-
-// DROP TABLE IF EXISTS orden_carro;
-// CREATE TABLE orden_carro
-// (
-//         no_orden        INTEGER PRIMARY KEY,
-//         carro           INTEGER,
-//         asegurado       INTEGER NOT NULL CHECK(asegurado==0 OR asegurado==1),
-//         fecha_orden     TEXT DEFAULT CURRENT_TIMESTAMP,
-//         FOREIGN KEY(carro) REFERENCES carro(carroid)
-// );
+import { ShowOrden } from "@/lib/types"
 
 export async function getOrdenes() {
     return new Promise((resolve, reject) => {
@@ -45,3 +20,40 @@ export async function getOrdenes() {
         );
     });
 }
+
+export async function createOrden(orden: ShowOrden) {
+    return new Promise<void>((resolve, reject) => {
+        db.run(
+            `INSERT INTO cliente (nombre, correo, tel) VALUES (?, ?, ?)`,
+            [orden.nombre, orden.correo, orden.tel],
+            function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    db.run(
+                        `INSERT INTO carro (propietario, kilometraje) VALUES (?, ?)`,
+                        [this.lastID, orden.kilometraje],
+                        function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                db.run(
+                                    `INSERT INTO orden_carro (carro, asegurado) VALUES (?, ?)`,
+                                    [this.lastID, orden.asegurado ? 1 : 0],
+                                    function (err) {
+                                        if (err) {
+                                            reject(err);
+                                        } else {
+                                            resolve();
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    );
+                }
+            }
+        );
+    });
+}
+
